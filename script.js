@@ -13,7 +13,7 @@ function applyTheme() {
 btn.addEventListener('click', () => { dark = !dark; applyTheme(); });
 applyTheme();
 
-const API_URL = 'https://e5ybvznon4.execute-api.us-east-1.amazonaws.com/count';
+const API_URL = 'https://npgmj6qyeh.execute-api.us-east-1.amazonaws.com/count';
 async function updateCounter() {
   try {
     const controller = new AbortController();
