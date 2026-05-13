@@ -34,7 +34,7 @@ Resources:
         CounterApi:
           Type: HttpApi
           Properties:
-            Path: /counter
+            Path: /count
             Method: POST
 
 Outputs:
