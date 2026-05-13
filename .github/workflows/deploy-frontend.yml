@@ -54,7 +54,10 @@ jobs:
           aws s3 sync . s3://resume-bachelder \
             --exclude ".git/*" \
             --exclude ".github/*" \
+            --exclude "backend/*" \
             --exclude "*.md" \
+            --exclude "*.json" \
+            --exclude "eslint.config.js" \
             --delete
       
       - name: Invalidate CloudFront cache
