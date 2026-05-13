@@ -6,8 +6,34 @@ on:
       - main
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install linters
+        run: |
+          npm install -g htmlhint stylelint stylelint-config-standard eslint
+
+      - name: Lint HTML
+        run: htmlhint index.html
+
+      - name: Lint CSS
+        run: stylelint styles.css
+
+      - name: Lint JavaScript
+        run: eslint script.js
+
   deploy:
     runs-on: ubuntu-latest
+    needs: lint
 
     steps:
       - name: Checkout code
