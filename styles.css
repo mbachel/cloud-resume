@@ -28,29 +28,29 @@
 }
 
 .dark {
-  --bg-primary:    #2E3532;
-  --bg-secondary:  #3C4440;
-  --bg-tertiary:   #464C49;
+  --bg-primary:    #303436;
+  --bg-secondary:  #303436;
+  --bg-tertiary:   #323035;
   --text:          #E5E5E5;
   --text-strong:   #fff;
-  --text-muted:    #a8ada9;
-  --accent:        #A02C3D;
-  --accent-dark:   #802331;
-  --panel:         rgb(46 53 50 / 90%);
-  --panel-border:  rgb(160 44 61 / 20%);
-  --panel-hover:   rgb(28 34 31 / 97%);
-  --grid-dot:      rgb(229 229 229 / 5.5%);
-  --arch-opacity:  0.55;
-  --arch-color:    #A02C3D;
-  --tag-bg:        rgb(160 44 61 / 13%);
-  --tag-border:    rgb(160 44 61 / 38%);
-  --tag-text:      #d45470;
-  --divider:       rgb(160 44 61 / 30%);
-  --btn-bg:        rgb(160 44 61 / 14%);
-  --btn-hover:     rgb(160 44 61 / 26%);
-  --scroll-thumb:  #A02C3D;
+  --text-muted:    #9ba8a0;
+  --accent:        #e05573;
+  --accent-dark:   #c43f5d;
+  --panel:         #26292B;
+  --panel-border:  rgb(224 85 115 / 22%);
+  --panel-hover:   rgb(32 34 37 / 97%);
+  --grid-dot:      rgb(229 229 229 / 5%);
+  --arch-opacity:  0.5;
+  --arch-color:    #e05573;
+  --tag-bg:        rgb(224 85 115 / 12%);
+  --tag-border:    rgb(224 85 115 / 35%);
+  --tag-text:      #e07590;
+  --divider:       rgb(224 85 115 / 28%);
+  --btn-bg:        rgb(224 85 115 / 12%);
+  --btn-hover:     rgb(224 85 115 / 24%);
+  --scroll-thumb:  #e05573;
   --icon-color:    #E5E5E5;
-  --special-border: rgb(160 44 61 / 75%);
+  --special-border: rgb(224 85 115 / 72%);
 }
 
 *,
