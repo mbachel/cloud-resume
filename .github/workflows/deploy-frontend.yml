@@ -58,7 +58,8 @@ jobs:
             --exclude "*.md" \
             --exclude "*.json" \
             --exclude "eslint.config.js" \
-            --delete
+            --delete \
+            --exact-timestamps
       
       - name: Invalidate CloudFront cache
         run: |
