@@ -12,17 +12,14 @@ terraform {
     bucket = "resume-bachelder-tfstate"
     key    = "cloud-resume/terraform.tfstate"
     region = "us-east-1"
-    profile = "terraform"
   }
 }
 
 provider "aws" {
   region = "us-east-1"
-  profile = "terraform"
 }
 
 provider "aws" {
   alias  = "us_east_2"
   region = "us-east-2"
-  profile = "terraform"
 }
