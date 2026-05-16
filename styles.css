@@ -479,12 +479,13 @@ section:nth-child(5) { animation-delay: 0.25s; }
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
-  min-width: 110px;
+  min-width: 120px;
   flex-shrink: 0;
 }
 
 .skill-values {
   font-size: 12px;
+  padding-left: 10px;
   color: var(--text);
 }
 
