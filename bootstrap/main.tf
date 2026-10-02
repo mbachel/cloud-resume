@@ -57,3 +57,49 @@ resource "aws_iam_role_policy" "frontend" {
         ]
     })
 }
+
+resource "aws_iam_role_policy" "infra" {
+  name = "deploy-infra"
+  role = aws_iam_role.gha_deploy.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "s3:ListBucket"
+        Resource = "arn:aws:s3:::resume-bachelder-tfstate"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["s3:GetObject", "s3:PutObject"]
+        Resource = "arn:aws:s3:::resume-bachelder-tfstate/cloud-resume/terraform.tfstate"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:Get*",
+          "s3:List*",
+          "s3:PutBucketPolicy",
+          "s3:PutBucketPublicAccessBlock",
+          "s3:PutBucketTagging"
+        ]
+        Resource = "arn:aws:s3:::resume-bachelder"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudfront:Get*",
+          "cloudfront:List*",
+          "cloudfront:UpdateDistribution",
+          "cloudfront:UpdateOriginAccessControl",
+          "cloudfront:TagResource"
+        ]
+        Resource = [
+          "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/EFO7NKGHS2UOM",
+          "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:origin-access-control/*"
+        ]
+      }
+    ]
+  })
+}
