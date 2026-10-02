@@ -1,3 +1,4 @@
+# Deployed by GitHub Actions via OIDC
 resource "aws_s3_bucket" "resume" {
   provider = aws.us_east_2
   bucket   = "resume-bachelder"
