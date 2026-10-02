@@ -90,14 +90,14 @@ Static HTML, CSS, and vanilla JavaScript. Features include:
 Triggered on push to `main` when files under `backend/` change.
 
 1. **Test** — sets up Python 3.14, installs dependencies, runs `pytest backend/ -v`
-2. **Deploy** (only if tests pass) — installs `aws-sam-cli`, runs `sam deploy --no-confirm-changeset`
+2. **Deploy** (only if tests pass) — assumes the AWS deploy role via OIDC, installs `aws-sam-cli`, runs `sam deploy --no-confirm-changeset`
 
 ### Frontend (`deploy-frontend.yml`)
 
 Triggered on push to `main`.
 
 1. **Lint** — runs `htmlhint`, `stylelint`, and `eslint` against `index.html`, `styles.css`, and `script.js`
-2. **Deploy** (only if lint passes) — syncs to S3 with `aws s3 sync`, then creates a CloudFront invalidation to bust the cache
+2. **Deploy** (only if lint passes) — assumes the AWS deploy role via OIDC, syncs to S3 with `aws s3 sync`, then creates a CloudFront invalidation to bust the cache
 
 ---
 
@@ -147,11 +147,21 @@ The test suite mocks the boto3 DynamoDB resource and covers:
 
 ## Deployment Requirements
 
+All pipelines authenticate to AWS with **GitHub OIDC**. There are no long-lived access keys. Each deploy job requests an `id-token: write` permission, and `aws-actions/configure-aws-credentials` exchanges the GitHub-issued token for short-lived credentials by assuming an IAM role.
+
 GitHub Actions uses the following repository secrets:
 
 | Secret | Used by |
 |---|---|
-| `AWS_ACCESS_KEY_ID` | Both pipelines |
-| `AWS_SECRET_ACCESS_KEY` | Both pipelines |
+| `AWS_ROLE_ARN` | All pipelines (IAM role assumed via OIDC) |
+| `AWS_REGION` | Backend and frontend pipelines |
+| `ACM_CERTIFICATE_ARN` | Infrastructure pipeline (`TF_VAR_acm_certificate_arn`) |
+| `TF_VAR_web_acl_id` | Infrastructure pipeline (`TF_VAR_web_acl_id`) |
 
-The IAM user or role backing these credentials needs permissions to deploy SAM stacks (CloudFormation, Lambda, DynamoDB, IAM) and to write to S3 + invalidate CloudFront.
+### AWS setup
+
+1. Add GitHub as an IAM OIDC identity provider (`https://token.actions.githubusercontent.com`, audience `sts.amazonaws.com`).
+2. Create an IAM role whose trust policy allows `sts:AssumeRoleWithWebIdentity` from that provider, scoped to this repository via the `token.actions.githubusercontent.com:sub` condition (e.g. `repo:mbachel/cloud-resume:ref:refs/heads/main`).
+3. Store the role's ARN in the `AWS_ROLE_ARN` secret.
+
+The role needs permissions to deploy SAM stacks (CloudFormation, Lambda, DynamoDB, IAM), manage the Terraform-provisioned S3, CloudFront, and ACM resources (including the Terraform state backend), and write to S3 + invalidate CloudFront.
