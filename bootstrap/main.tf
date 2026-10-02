@@ -1,5 +1,9 @@
 data "aws_caller_identity" "current" {}
 
+locals {
+  acct = data.aws_caller_identity.current.account_id
+}
+
 resource "aws_iam_openid_connect_provider" "github" {
     url = "https://token.actions.githubusercontent.com"
 
@@ -99,6 +103,78 @@ resource "aws_iam_role_policy" "infra" {
           "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/EFO7NKGHS2UOM",
           "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:origin-access-control/*"
         ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "backend" {
+  name = "deploy-backend"
+  role = aws_iam_role.gha_deploy.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudformation:CreateChangeSet",
+          "cloudformation:DescribeChangeSet",
+          "cloudformation:ExecuteChangeSet",
+          "cloudformation:DeleteChangeSet",
+          "cloudformation:DescribeStacks",
+          "cloudformation:DescribeStackEvents",
+          "cloudformation:GetTemplate",
+          "cloudformation:GetTemplateSummary"
+        ]
+        Resource = [
+          "arn:aws:cloudformation:us-east-1:${local.acct}:stack/cloud-resume-backend/*",
+          "arn:aws:cloudformation:us-east-1:${local.acct}:stack/aws-sam-cli-managed-default/*",
+          "arn:aws:cloudformation:us-east-1:aws:transform/Serverless-2016-10-31"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = ["s3:ListBucket", "s3:GetBucketLocation", "s3:GetObject", "s3:PutObject"]
+        Resource = [
+          "arn:aws:s3:::aws-sam-cli-managed-default-samclisourcebucket-*",
+          "arn:aws:s3:::aws-sam-cli-managed-default-samclisourcebucket-*/*"
+        ]
+      },
+      {
+        Effect   = "Allow"
+        Action   = "lambda:*"
+        Resource = "arn:aws:lambda:us-east-1:${local.acct}:function:visitor-counter"
+      },
+      {
+        Effect   = "Allow"
+        Action   = "dynamodb:*"
+        Resource = "arn:aws:dynamodb:us-east-1:${local.acct}:table/visitor-count"
+      },
+      {
+        Effect = "Allow"
+        Action = ["apigateway:GET", "apigateway:POST", "apigateway:PATCH", "apigateway:PUT", "apigateway:DELETE", "apigateway:TagResource"]
+        Resource = [
+          "arn:aws:apigateway:us-east-1::/apis",
+          "arn:aws:apigateway:us-east-1::/apis/*",
+          "arn:aws:apigateway:us-east-1::/tags/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:GetRole",
+          "iam:CreateRole",
+          "iam:DeleteRole",
+          "iam:TagRole",
+          "iam:AttachRolePolicy",
+          "iam:DetachRolePolicy",
+          "iam:PutRolePolicy",
+          "iam:GetRolePolicy",
+          "iam:DeleteRolePolicy",
+          "iam:PassRole"
+        ]
+        Resource = "arn:aws:iam::${local.acct}:role/cloud-resume-backend-*"
       }
     ]
   })

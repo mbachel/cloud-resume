@@ -1,3 +1,4 @@
+# Deployed by GitHub Actions via OIDC
 import json
 import boto3
 
