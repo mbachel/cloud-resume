@@ -1,3 +1,7 @@
 infra/.terraform/
 infra/terraform.tfvars
 infra/.terraform.lock.hcl
+
+bootstrap/.terraform/
+bootstrap/terraform.tfvars
+bootstrap/.terraform.lock.hcl
